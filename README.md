@@ -30,3 +30,4 @@
 - https://grouplens.org/datasets/movielens/
 - https://medium.com/@julsimon/building-a-movie-recommender-with-factorization-machines-on-amazon-sagemaker-cedbfc8c93d8
 - http://sagemaker-nab-demo.s3-website-us-west-2.amazonaws.com/
+- https://sagemaker.readthedocs.io/en/latest/factorization_machines.html
