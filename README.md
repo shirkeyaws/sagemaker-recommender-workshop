@@ -2,21 +2,26 @@
 
 ## Agenda
 
-- [0.75] Intro (PPT+Demo)
-    - [0.5] overview of ML pipeline + SageMaker
-    - [0.25] demo of console, walkthrough of one example via AWS console
-        - during AWS console demo: launch individual notebook instances
+- {0.75} Introduction
+    - {0.5} Overview of ML workflow -> decks/Recommender_Workshop_01_Introduction.pptx
+    - {0.25} MovieLens data intro -> notebooks/01_exploring_data.ipynb
+        - preflight: CFN template check -> cfn_setup.yaml
+        - launch individual notebook instances
+            - what sizes?
+        - clone repo -> http://bit.ly/2wkaV0N (this repo)
+- [0.5] Unsupervised ML
+    - concepts
+    - hands-on
+- [0.25] **Break**
 - [1] Recommendation Engine
     - [0.25] concepts
     - [0.75] hands-on
         - show movie recommender website: http://sagemaker-nab-demo.s3-website-us-west-2.amazonaws.com/
         - clone repo to individual notebook instances
+        - run all at beginning of workshop
         - TBD: perform training locally?
         - during training: discussion of underlying mechanisms for SageMaker (Batch, ECR, etc)
-- [0.25] **Break**
-- [0.5] Unsupervised ML
-    - concepts
-    - hands-on
+
 - [0.5] Hyperparameter Optimization (PPT+Demo)
     - overview
     - demo w/ XGBoost
