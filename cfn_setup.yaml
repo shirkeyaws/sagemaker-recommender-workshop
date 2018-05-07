@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  InputBucketName:
+    Type: "String"
+    Description : "Enter a unique name for object storage bucket to store data"
+Resources:
+  InputBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 
+        Ref: InputBucketName
+    DeletionPolicy: Delete
+  SagemakerRole: 
+      Type: "AWS::IAM::Role"
+      Properties: 
+        AssumeRolePolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - 
+              Effect: "Allow"
+              Principal: 
+                Service: 
+                  - "sagemaker.amazonaws.com"
+              Action: 
+                - "sts:AssumeRole"
+        Path: "/"
+        Policies: 
+          - 
+            PolicyName: "SagemakerAccessResources"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement: 
+                -
+                  Effect: "Allow"
+                  Action: 
+                    - "sagemaker:*"
+                    - "ecr:GetAuthorizationToken"
+                    - "cloudwatch:PutMetricData"
+                    - "logs:CreateLogGroup"
+                    - "logs:CreateLogStream"
+                    - "logs:DescribeLogStreams"
+                    - "logs:PutLogEvents"
+                    - "logs:GetLogEvents"
+                    - "ec2:CreateNetworkInterface"
+                    - "ec2:CreateNetworkInterfacePermission"
+                    - "ec2:DeleteNetworkInterface"
+                    - "ec2:DeleteNetworkInterfacePermission"
+                    - "ec2:DescribeNetworkInterfaces"
+                    - "ec2:DescribeVpcs"
+                    - "ec2:DescribeDhcpOptions"
+                    - "ec2:DescribeSubnets"
+                    - "ec2:DescribeSecurityGroups"
+                    - "application-autoscaling:DeleteScalingPolicy"
+                    - "application-autoscaling:DeleteScheduledAction"
+                    - "application-autoscaling:DeregisterScalableTarget"
+                    - "application-autoscaling:DescribeScalableTargets"
+                    - "application-autoscaling:DescribeScalingActivities"
+                    - "application-autoscaling:DescribeScalingPolicies"
+                    - "application-autoscaling:DescribeScheduledActions"
+                    - "application-autoscaling:PutScalingPolicy"
+                    - "application-autoscaling:PutScheduledAction"
+                    - "application-autoscaling:RegisterScalableTarget"
+                  Resource: "*"
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "iam:PassRole"
+                  Resource: "*"
+                  Condition:
+                    StringEquals:
+                      "iam:PassedToService": "sagemaker.amazonaws.com"
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "s3:ListBucket"
+                  Resource:
+                    - 
+                      !Join
+                        - ''
+                        - - 'arn:aws:s3:::'
+                          - !Ref InputBucket
+                -      
+                  Effect: "Allow"
+                  Action:
+                    - "s3:*"
+                  Resource:
+                    -
+                      !Join
+                        - ''
+                        - - 'arn:aws:s3:::'
+                          - !Ref InputBucket
+                          - '/*'
+                -
+                  Effect: "Allow"
+                  Action:
+                    - "ecr:BatchCheckLayerAvailability"
+                    - "ecr:GetDownloadUrlForLayer"
+                    - "ecr:BatchGetImage"
+                  Resource:
+                    - "arn:aws:ecr:::repository/*"
+                - 
+                  Effect: "Allow"
+                  Action: 
+                    - "iam:CreateServiceLinkedRole"
+                  Resource: 
+                    - "arn:aws:iam::*:role/aws-service-role/sagemaker.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_SageMakerEndpoint"
+                  Condition: 
+                    StringLike:
+                      "iam:AWSServiceName": "sagemaker.application-autoscaling.amazonaws.com"
+Outputs:
+  SageMakerRoleArn:
+    Description: The Arn IAM Role for SageMaker to access S3 buckets and other resources
+    Value: !GetAtt [ SagemakerRole, Arn ]
